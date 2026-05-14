@@ -31,6 +31,8 @@ const Navbar = () => {
     { name: 'Modules', to: '/#modules' },
     { name: 'Pricing', to: '/#pricing' },
     { name: 'About Us', to: '/about' },
+    { name: 'Careers', to: '/careers' },
+    { name: 'Contact', to: '/contact' },
   ];
 
   const closeMenu = () => setIsMenuOpen(false);
