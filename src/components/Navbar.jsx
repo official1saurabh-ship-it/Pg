@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
+import pg from "../assets/pg.png";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,9 +26,9 @@ const Navbar = () => {
   const isHome = location.pathname === '/';
 
   const navLinks = [
-    { name: 'Features', href: isHome ? "#features" : "/#features" },
-    { name: 'Modules', href: isHome ? "#modules" : "/#modules" },
-    { name: 'Pricing', href: isHome ? "#pricing" : "/#pricing" },
+    { name: 'Features', to: '/#features' },
+    { name: 'Modules', to: '/#modules' },
+    { name: 'Pricing', to: '/#pricing' },
     { name: 'About Us', to: '/about' },
   ];
 
@@ -37,12 +37,11 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-[5%] py-4 md:py-5 transition-all duration-300 ${
-          isScrolled || isMenuOpen ? 'bg-[rgba(249,246,240,0.92)] backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-[5%] py-4 md:py-5 transition-all duration-300 ${isScrolled || isMenuOpen ? 'bg-[rgba(249,246,240,0.92)] backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
+          }`}
       >
         <Link to="/" onClick={closeMenu} className="flex items-center gap-[0.6rem] no-underline">
-          <div className="text-lg md:text-xl font-black font-playfair text-ink">Tenant Mitra</div>
+          <img src={pg} alt="" className='w-30 h-20' />
         </Link>
 
         {/* Desktop Menu */}
@@ -50,11 +49,10 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <li key={link.name}>
               {link.to ? (
-                <Link 
-                  to={link.to} 
-                  className={`text-[0.88rem] xl:text-[0.9rem] font-medium transition-colors ${
-                    location.pathname === link.to ? 'text-ink font-bold' : 'text-text-muted hover:text-ink'
-                  }`}
+                <Link
+                  to={link.to}
+                  className={`text-[0.88rem] xl:text-[0.9rem] font-medium transition-colors ${location.pathname === link.to ? 'text-ink font-bold' : 'text-text-muted hover:text-ink'
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -78,7 +76,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className="lg:hidden w-10 h-10 flex items-center justify-center text-ink cursor-pointer z-[110]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Menu"
@@ -93,38 +91,35 @@ const Navbar = () => {
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <div 
-        className={`fixed inset-0 z-[90] lg:hidden transition-all duration-500 ${
-          isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
-        }`}
+      <div
+        className={`fixed inset-0 z-[90] lg:hidden transition-all duration-500 ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
+          }`}
       >
-        <div 
+        <div
           className="absolute inset-0 bg-ink/20 backdrop-blur-sm"
           onClick={closeMenu}
         ></div>
-        
-        <div 
-          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-paper shadow-2xl transition-transform duration-500 ease-out flex flex-col ${
-            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+
+        <div
+          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-paper shadow-2xl transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
         >
           <div className="p-8 pt-24 flex flex-col gap-8 h-full">
             <ul className="flex flex-col gap-6 list-none p-0">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   {link.to ? (
-                    <Link 
-                      to={link.to} 
+                    <Link
+                      to={link.to}
                       onClick={closeMenu}
-                      className={`text-xl font-bold font-playfair transition-colors ${
-                        location.pathname === link.to ? 'text-blue-mid' : 'text-ink'
-                      }`}
+                      className={`text-xl font-bold font-playfair transition-colors ${location.pathname === link.to ? 'text-blue-mid' : 'text-ink'
+                        }`}
                     >
                       {link.name}
                     </Link>
                   ) : (
-                    <a 
-                      href={link.href} 
+                    <a
+                      href={link.href}
                       className="text-xl font-bold font-playfair text-ink hover:text-blue-mid transition-colors"
                       onClick={closeMenu}
                     >
