@@ -37,11 +37,11 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[150] flex items-center justify-between px-[5%] py-4 md:py-5 transition-all duration-300 ${isMenuOpen ? 'bg-paper' : isScrolled ? 'bg-paper backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-[150] flex items-center justify-between px-[5%] py-2.5 md:py-3 transition-all duration-300 ${isMenuOpen ? 'bg-paper' : isScrolled ? 'bg-paper backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
           }`}
       >
         <Link to="/" onClick={closeMenu} className="flex items-center gap-[0.6rem] no-underline">
-          <img src={pg} alt="Tenant Mitra" className='w-32 h-16 object-contain' />
+          <img src={pg} alt="Tenant Mitra" className='w-28 h-14 object-contain' />
         </Link>
 
         {/* Desktop Menu */}
