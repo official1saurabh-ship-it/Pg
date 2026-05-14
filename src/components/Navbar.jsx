@@ -37,11 +37,11 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-[5%] py-4 md:py-5 transition-all duration-300 ${isScrolled || isMenuOpen ? 'bg-[rgba(249,246,240,0.92)] backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-[150] flex items-center justify-between px-[5%] py-4 md:py-5 transition-all duration-300 ${isMenuOpen ? 'bg-paper' : isScrolled ? 'bg-paper backdrop-blur-[12px] border-b border-border shadow-[0_4px_24px_rgba(13,17,23,0.08)]' : 'bg-transparent'
           }`}
       >
         <Link to="/" onClick={closeMenu} className="flex items-center gap-[0.6rem] no-underline">
-          <img src={pg} alt="" className='w-30 h-20' />
+          <img src={pg} alt="Tenant Mitra" className='w-32 h-16 object-contain' />
         </Link>
 
         {/* Desktop Menu */}
@@ -77,7 +77,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-ink cursor-pointer z-[110]"
+            className="lg:hidden w-10 h-10 flex items-center justify-center text-ink cursor-pointer z-[130]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Menu"
           >
@@ -92,7 +92,7 @@ const Navbar = () => {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 z-[90] lg:hidden transition-all duration-500 ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
+        className={`fixed inset-0 z-[120] lg:hidden transition-all duration-500 ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
           }`}
       >
         <div
@@ -101,10 +101,10 @@ const Navbar = () => {
         ></div>
 
         <div
-          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-paper shadow-2xl transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-paper border-l border-border transition-transform duration-500 ease-out flex flex-col ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
         >
-          <div className="p-8 pt-24 flex flex-col gap-8 h-full">
+          <div className="p-8 pt-36 flex flex-col gap-8 h-full">
             <ul className="flex flex-col gap-6 list-none p-0">
               {navLinks.map((link) => (
                 <li key={link.name}>
