@@ -1,8 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import emailjs from '@emailjs/browser';
+
+// EMAILJS CONFIGURATION
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID_ORG = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_ORG;
+const EMAILJS_TEMPLATE_ID_USER = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_USER;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+const SITE_NAME = "Tenant Mitra";
+
+// Initialize EmailJS
+if (EMAILJS_PUBLIC_KEY) {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
 
 const Contact = () => {
+  const formRef = useRef();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' });
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,10 +27,86 @@ const Contact = () => {
     message: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const text = `*New Inquiry from Tenant Mitra Website*%0A%0A*Name:* ${formData.name}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*PG Name:* ${formData.pgName}%0A%0A*Message:*%0A${formData.message}`;
-    window.open(`https://wa.me/919044425858?text=${text}`, '_blank');
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
+
+    const now = new Date().toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    // Parameters for Admin Notification
+    const ownerParams = {
+      to_email: "ansh@biosoftech.com", // Keeping the recipient from reference or can be configurable
+      cc_email: "kishan@biosoftech.com",
+      owner_name: formData.name,
+      hotel_name: formData.pgName, // Map pgName to hotel_name for template compatibility
+      user_email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      date_time: now,
+      site_name: SITE_NAME,
+    };
+
+    // Parameters for User Confirmation
+    const userParams = {
+      owner_name: formData.name,
+      user_email: formData.email,
+      site_name: SITE_NAME,
+      company_name: "Biosoftech Solutions",
+      support_email: "info@biosoftech.com",
+      to_email: formData.email
+    };
+
+    try {
+      // Basic validation
+      if (!EMAILJS_SERVICE_ID || EMAILJS_SERVICE_ID.includes('YOUR_')) {
+        console.warn('EmailJS Service ID is missing');
+      }
+
+      // 1. Send Email to Admin
+      if (EMAILJS_TEMPLATE_ID_ORG) {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID_ORG,
+          ownerParams,
+          EMAILJS_PUBLIC_KEY
+        );
+      }
+
+      // 2. Send Confirmation Email to User
+      if (EMAILJS_TEMPLATE_ID_USER) {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID_USER,
+          userParams,
+          EMAILJS_PUBLIC_KEY
+        );
+      }
+
+      setStatus({
+        type: 'success',
+        message: 'Thank you! Your message has been sent successfully.'
+      });
+      setFormData({ name: '', email: '', phone: '', pgName: '', message: '' });
+      
+      // Reset status after 5 seconds
+      setTimeout(() => setStatus({ type: '', message: '' }), 5000);
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again or contact us directly.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -91,7 +183,7 @@ const Contact = () => {
                 <h2 className="font-playfair text-2xl font-bold text-ink mb-2">Send us a message</h2>
                 <p className="text-text-muted text-[0.95rem] mb-8">Fill out the form below and we'll get back to you shortly.</p>
                 
-                <form className="space-y-6" onSubmit={handleSubmit}>
+                <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[0.85rem] font-bold text-ink uppercase tracking-wider">Full Name</label>
@@ -159,9 +251,32 @@ const Contact = () => {
                     ></textarea>
                   </div>
 
-                  <button type="submit" className="w-full py-4 bg-ink text-paper rounded-xl text-[1rem] font-bold hover:bg-blue-mid transition-all shadow-lg hover:shadow-blue-mid/20">
-                    Send Message
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className={`w-full py-4 rounded-xl text-[1rem] font-bold transition-all shadow-lg ${
+                      isSubmitting ? 'bg-text-muted cursor-not-allowed' : 
+                      status.type === 'success' ? 'bg-green-600 hover:bg-green-700' : 
+                      status.type === 'error' ? 'bg-red-600 hover:bg-red-700' : 
+                      'bg-ink hover:bg-blue-mid hover:shadow-blue-mid/20'
+                    } text-paper`}
+                  >
+                    {isSubmitting ? 'Sending...' : 
+                     status.type === 'success' ? 'Message Sent!' : 
+                     status.type === 'error' ? 'Try Again' : 
+                     'Send Message'}
                   </button>
+
+                  {status.type === 'success' && (
+                    <p className="text-green-600 text-sm font-medium text-center animate-fade-up">
+                      {status.message}
+                    </p>
+                  )}
+                  {status.type === 'error' && (
+                    <p className="text-red-600 text-sm font-medium text-center animate-fade-up">
+                      {status.message}
+                    </p>
+                  )}
                 </form>
               </div>
             </div>
